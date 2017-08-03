@@ -1,5 +1,5 @@
 class containerController {
-    constructor($state, socketService, $location, localStorageService, $rootScope) {
+    constructor($state, socketService, $location, localStorageService, $rootScope, $timeout) {
         $rootScope.players=[];
         if(!$rootScope.account){
             $location.path('/login');
@@ -12,7 +12,9 @@ class containerController {
 
         socketService.socketOn('players',(from)=>{
                 $rootScope.players=from;
-                $rootScope.$broadcast('createPlayers');
+                console.log(from);
+                
+                $timeout(() => { $rootScope.$broadcast('createPlayers'); }, 500);
             });
 
 
@@ -22,6 +24,6 @@ class containerController {
 
 }
 
-containerController.$inject = ['$state', 'socketService', '$location', 'localStorageService', '$rootScope'];
+containerController.$inject = ['$state', 'socketService', '$location', 'localStorageService', '$rootScope','$timeout'];
 
 angular.module('berger').controller('containerController', containerController);

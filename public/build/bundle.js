@@ -71,7 +71,7 @@ angular.module('berger').directive('chatDirective', chatDirective);
 
 },{}],2:[function(require,module,exports){
 class containerController {
-    constructor($state, socketService, $location, localStorageService, $rootScope) {
+    constructor($state, socketService, $location, localStorageService, $rootScope, $timeout) {
         $rootScope.players = [];
         if (!$rootScope.account) {
             $location.path('/login');
@@ -82,13 +82,17 @@ class containerController {
 
         socketService.socketOn('players', from => {
             $rootScope.players = from;
-            $rootScope.$broadcast('createPlayers');
+            console.log(from);
+
+            $timeout(() => {
+                $rootScope.$broadcast('createPlayers');
+            }, 500);
         });
     }
 
 }
 
-containerController.$inject = ['$state', 'socketService', '$location', 'localStorageService', '$rootScope'];
+containerController.$inject = ['$state', 'socketService', '$location', 'localStorageService', '$rootScope', '$timeout'];
 
 angular.module('berger').controller('containerController', containerController);
 
@@ -111,6 +115,56 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
         templateUrl: 'components/game/game.html',
         restrict: 'E',
         link: scope => {
+            var pane = $('#pane'),
+                box = $('.box'),
+                maxValue = pane.width() - box.width(),
+                keysPressed = {},
+                distancePerIteration = 3;
+            var k = 0;
+            var foodCount = 0;
+            var boxName = document.createElement('p');
+            boxName.innerText = $rootScope.account.uname;
+            boxName.id = 'name';
+            box.append(boxName);
+            var collision = ($div1, $div2) => {
+
+                if ($div2.offset()) {
+                    var x1 = $div1.offset().left;
+                    var y1 = $div1.offset().top;
+                    var h1 = $div1.outerHeight(true);
+                    var w1 = $div1.outerWidth(true);
+                    var b1 = y1 + h1;
+                    var r1 = x1 + w1;
+                    var x2 = $div2.offset().left;
+                    var y2 = $div2.offset().top;
+                    var h2 = $div2.outerHeight(true);
+                    var w2 = $div2.outerWidth(true);
+                    var b2 = y2 + h2;
+                    var r2 = x2 + w2;
+                    if (b1 < y2 || y1 > b2 || r1 < x2 || x1 > r2) return false;
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+
+            var calculateNewValue = (oldValue, keyCode1, keyCode2) => {
+                var newValue = parseInt(oldValue, 10) - (keysPressed[keyCode1] ? distancePerIteration : 0) + (keysPressed[keyCode2] ? distancePerIteration : 0);
+                return newValue < 0 ? 0 : newValue > maxValue ? maxValue : newValue;
+            };
+
+            var getRandomArbitrary = (min, max) => {
+                return Math.random() * (max - min) + min;
+            };
+
+            var spawnFood = () => {
+                var div = document.createElement('div');
+                div.className += 'food';
+                div.id = foodCount++;
+                document.getElementById('pane').appendChild(div);
+                var id = '#' + foodCount;
+                $(id);
+            };
 
             socketService.socketOn('playerDisconnect', from => {
                 for (var i = 0; i < $rootScope.players.length; i++) {
@@ -119,6 +173,9 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                         if (index > -1) {
                             $rootScope.players.splice(index, 1);
                         }
+
+                        var leftEnemy = document.getElementById(from.uname);
+                        document.getElementById('pane').removeChild(leftEnemy);
                     }
                 }
                 scope.$apply();
@@ -127,10 +184,14 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
             $rootScope.$on('createPlayers', () => {
                 for (var i = 0; i < $rootScope.players.length; i++) {
                     if ($rootScope.players[i].uname != $rootScope.account.uname) {
-                        console.log('one box created');
                         var div = document.createElement('div');
                         div.className += 'box enemy';
-                        div.document.getElementById('pane').appendChild(div);
+                        div.id = $rootScope.players[i].uname;
+                        document.getElementById('pane').appendChild(div);
+                        var enemyName = document.createElement('p');
+                        enemyName.innerText = $rootScope.players[i].uname;
+                        enemyName.id = 'name';
+                        document.getElementById($rootScope.players[i].uname).appendChild(enemyName);
                     }
                 }
             });
@@ -140,19 +201,13 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 scope.$apply();
                 var div = document.createElement('div');
                 div.className += 'box enemy';
+                div.id = from.uname;
                 document.getElementById('pane').appendChild(div);
+                var enemyName = document.createElement('p');
+                enemyName.innerText = from.uname;
+                enemyName.id = 'name';
+                document.getElementById(from.uname).appendChild(enemyName);
             });
-
-            var pane = $('#pane'),
-                box = $('.box'),
-                maxValue = pane.width() - box.width(),
-                keysPressed = {},
-                distancePerIteration = 3;
-
-            var calculateNewValue = (oldValue, keyCode1, keyCode2) => {
-                var newValue = parseInt(oldValue, 10) - (keysPressed[keyCode1] ? distancePerIteration : 0) + (keysPressed[keyCode2] ? distancePerIteration : 0);
-                return newValue < 0 ? 0 : newValue > maxValue ? maxValue : newValue;
-            };
 
             $(window).keydown(event => {
                 keysPressed[event.which] = true;
@@ -162,6 +217,34 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
             });
 
             setInterval(() => {
+                if (k < 200) {
+                    k++;
+                } else {
+                    for (i = 0; i < $rootScope.players.length; i++) {
+
+                        if ($rootScope.players[i].uname != $rootScope.account.uname) {
+                            var id = '#' + $rootScope.players[i].uname;
+                            var enemy = $(id);
+                            var food = $('.food');
+                            if (enemy) {
+
+                                if (collision(box, enemy)) {
+                                    if (box.outerWidth(true) > enemy.outerWidth(true)) {
+                                        console.log("i've won");
+                                    } else if (box.outerWidth(true) < enemy.outerWidth(true)) {
+                                        console.log("i've lost");
+                                    } else if (box.outerWidth(true) == enemy.outerWidth(true)) {
+                                        console.log('same dudes');
+                                    }
+                                } else if (collision(box, food)) {
+                                    console.log('neamyy');
+                                    console.log(food);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 var coords = {
                     left: null,
                     top: null
@@ -180,18 +263,20 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
 
                 socketService.socketEmit('moving', {
                     coords: coords,
-                    uname: $rootScope.uname
+                    uname: $rootScope.account.uname
                 });
             }, 20);
 
             socketService.socketOn('moving', from => {
-                var enemy = $('#' + from.uname);
+                var id = '#' + from.uname;
+                var enemy = $(id);
+
                 enemy.css({
                     left: (index, oldValue) => {
-                        return calculateNewValue(from.oldValue, 37, 39);
+                        return from.coords.left;
                     },
                     top: (index, oldValue) => {
-                        return calculateNewValue(from.oldValue, 38, 40);
+                        return from.coords.top;
                     }
                 });
             });
