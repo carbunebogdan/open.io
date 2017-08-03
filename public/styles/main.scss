@@ -10,12 +10,13 @@ html,body {
 #name{
   color:gray;
   font-weight:bold;
+  text-align:center
 }
 
 #pane {
     position:relative;
-    width:50rem; 
-    height:50rem;
+    width:1000px; 
+    height:1000px;
     border:2px solid red;
 }
 
@@ -33,7 +34,11 @@ html,body {
     top:140px; 
     left:140px;
     width:40px; 
-    height:40px;          
+    height:40px;
+    -webkit-transition: width 1s ease-in-out,height 1s ease-in-out;
+    -moz-transition: width 1s ease-in-out,height 1s ease-in-out;
+    -o-transition: width 1s ease-in-out,height 1s ease-in-out;
+    transition: width 1s ease-in-out,height 1s ease-in-out;        
 }
 
 .me{

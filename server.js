@@ -35,6 +35,19 @@ const server = app.listen(app.get('port'), ()=>{
 server.listen('/tmp/nginx.socket');
 const io = require('socket.io')(server);
 var players=[];
+var food=[];
+
+var generateFood=(quantity,size)=>{
+    for(var i=0;i<quantity;i++){
+        food.push({
+            id:i,
+            left:Math.random() * (size - 0) + 0,
+            top:Math.random() * (size - 0) + 0
+        })      
+    }
+}
+generateFood(3,800);
+
 /**
  * Socket connection
  * @param {object} socket - socket object.
@@ -44,12 +57,7 @@ io.on('connection', (socket) => {
     var connected=false;
     var currentPlayer = {
         id: socket.id,
-        x: null,
-        y: null,
-        w: null,
-        h: null,
-        cells: null,
-        massTotal: null,
+        size:null,
         hue: Math.round(Math.random() * 360),
         type: null,
         lastHeartbeat: new Date().getTime(),
@@ -72,7 +80,10 @@ io.on('connection', (socket) => {
             socket.emit('confirmMessage', 1);
             currentPlayer.uname=from;
             players.push(currentPlayer);
-            socket.emit('players',players);
+            socket.emit('game',{
+                players:players,
+                food:food
+            });
             socket.broadcast.emit('playerJoin', currentPlayer);
             connected=true;
             
@@ -80,6 +91,7 @@ io.on('connection', (socket) => {
                 socket.emit('confirmMessage', 0);
         }
     });
+
 
 
     // in case of an unexpected disconnection remove me from players list
@@ -101,8 +113,12 @@ io.on('connection', (socket) => {
 
     // change food pos
     socket.on('changeFoodPos',(from)=>{
-        console.log(from);
         socket.broadcast.emit('changeFoodPos',from);
+    })
+
+    // update enemy size
+    socket.on('increaseEnemy',(from)=>{
+        socket.broadcast.emit('increaseEnemy',from);
     })
 
     // moving message

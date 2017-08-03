@@ -80,12 +80,11 @@ class containerController {
         // Register socket
         socketService.registerSocket();
 
-        socketService.socketOn('players', from => {
-            $rootScope.players = from;
-            console.log(from);
-
+        socketService.socketOn('game', from => {
+            $rootScope.players = from.players;
+            $rootScope.food = from.food;
             $timeout(() => {
-                $rootScope.$broadcast('createPlayers');
+                $rootScope.$broadcast('createGame');
             }, 500);
         });
     }
@@ -121,13 +120,15 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 keysPressed = {},
                 distancePerIteration = 3;
             var k = 0;
-            var foodCount = 0;
             var boxName = document.createElement('p');
             boxName.innerText = $rootScope.account.uname;
             boxName.id = 'name';
             box.append(boxName);
-            var collision = ($div1, $div2) => {
+            scope.showLose = function (ev) {
+                console.log("i've lost :(");
+            };
 
+            var collision = ($div1, $div2) => {
                 if ($div2.offset()) {
                     var x1 = $div1.offset().left;
                     var y1 = $div1.offset().top;
@@ -157,15 +158,15 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 return Math.random() * (max - min) + min;
             };
 
-            var spawnFood = () => {
+            var spawnFood = food => {
                 var div = document.createElement('div');
                 div.className += 'food';
-                div.id = foodCount++;
+                div.id = food.id;
                 document.getElementById('pane').appendChild(div);
-                var id = '#' + foodCount;
+                var id = '#' + food.id;
                 $(id).css({
-                    left: getRandomPos(0, maxValue),
-                    top: getRandomPos(0, maxValue)
+                    left: food.left,
+                    top: food.top
                 });
             };
 
@@ -191,7 +192,21 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 });
             };
 
-            var increaseSize = () => {};
+            var increaseSize = (size, target = null) => {
+                if (target) {
+                    var id = "#" + target;
+                    var targetEl = $(id);
+                    targetEl.width(targetEl.width() + size / 2);
+                    targetEl.height(targetEl.height() + size / 2);
+                } else {
+                    box.width(box.width() + size / 2);
+                    box.height(box.height() + size / 2);
+                }
+            };
+
+            socketService.socketOn('increaseEnemy', from => {
+                increaseSize(from.size, from.target);
+            });
 
             socketService.socketOn('playerDisconnect', from => {
                 for (var i = 0; i < $rootScope.players.length; i++) {
@@ -208,7 +223,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 scope.$apply();
             });
 
-            $rootScope.$on('createPlayers', () => {
+            $rootScope.$on('createGame', () => {
                 for (var i = 0; i < $rootScope.players.length; i++) {
                     if ($rootScope.players[i].uname != $rootScope.account.uname) {
                         var div = document.createElement('div');
@@ -220,6 +235,9 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                         enemyName.id = 'name';
                         document.getElementById($rootScope.players[i].uname).appendChild(enemyName);
                     }
+                }
+                for (var i = 0; i < $rootScope.food.length; i++) {
+                    spawnFood($rootScope.food[i]);
                 }
             });
 
@@ -256,21 +274,34 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                         if ($rootScope.players[i].uname != $rootScope.account.uname) {
                             var id = '#' + $rootScope.players[i].uname;
                             var enemy = $(id);
-                            var food = $('.food');
                             if (enemy) {
-
                                 if (collision(box, enemy)) {
                                     if (box.outerWidth(true) > enemy.outerWidth(true)) {
-                                        console.log("i've won");
+                                        increaseSize(food.width());
+                                        socketService.socketEmit('increaseEnemy', {
+                                            size: food.width(),
+                                            target: $rootScope.account.uname
+                                        });
                                     } else if (box.outerWidth(true) < enemy.outerWidth(true)) {
-                                        console.log("i've lost");
+                                        scope.showLose();
                                     } else if (box.outerWidth(true) == enemy.outerWidth(true)) {
                                         console.log('same dudes');
                                     }
-                                } else if (collision(box, food)) {
-                                    changeFoodPos(food);
                                 }
                             }
+                        }
+                    }
+                    for (i = 0; i < $rootScope.food.length; i++) {
+                        var foodId = '#' + $rootScope.food[i].id;
+                        var food = $(foodId);
+                        if (collision(box, food)) {
+                            changeFoodPos(food);
+                            increaseSize(food.width());
+                            console.log(box.attr('id'));
+                            socketService.socketEmit('increaseEnemy', {
+                                size: food.width(),
+                                target: $rootScope.account.uname
+                            });
                         }
                     }
                 }

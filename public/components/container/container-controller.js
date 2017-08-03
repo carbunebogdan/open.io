@@ -10,11 +10,10 @@ class containerController {
         socketService.registerSocket();
 
 
-        socketService.socketOn('players',(from)=>{
-                $rootScope.players=from;
-                console.log(from);
-                
-                $timeout(() => { $rootScope.$broadcast('createPlayers'); }, 500);
+        socketService.socketOn('game',(from)=>{
+                $rootScope.players=from.players;
+                $rootScope.food=from.food;
+                $timeout(() => { $rootScope.$broadcast('createGame'); }, 500);
             });
 
 
