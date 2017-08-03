@@ -1,0 +1,37 @@
+<div layout="column" layout-align="center center" >
+  <md-content class="md-whiteframe-15dp col-lg-5">
+      <div>
+          
+      </div>
+  </md-content>
+  <md-content class="md-whiteframe-15dp col-lg-5">
+  <h1 style="text-align: center">Open.io</h1>
+    <md-tabs md-dynamic-height md-border-bottom >
+      <md-tab label="Login">
+        <md-content class="md-padding">
+
+        <div>
+          <h4 style="text-align: center">enter an username</h4><hr>
+          	<form name="loginFrm" ng-submit="proceed(username)">
+		      <md-input-container style="display: block;margin:auto;width: 20rem">
+		        <label style="text-align: center">Username</label>
+		        <input ng-model="username" name="uname" required>
+		        <div ng-messages="loginFrm.uname.$error" multiple md-auto-hide="false">
+                        <div ng-message="required">
+                            You must enter an username.
+                        </div>
+                    </div>
+		      </md-input-container>
+		      
+		      <div>
+		      <md-button type="submit" class="md-primary md-raised" ng-disabled="!username" style="display: block;margin: auto">Go on!</md-button>
+		      <md-progress-linear ng-if="loginLoading" md-mode="indeterminate"></md-progress-linear>
+		      
+		      </div>
+		    
+		    </form>
+            </div>
+
+        </md-content>
+      </md-tab>
+      
