@@ -97,6 +97,10 @@ io.on('connection', (socket) => {
         
     });
 
+    socket.on('moving', (from)=>{
+        socket.broadcast.emit('moving', from);
+    })
+
     
     // new message
     socket.on('newMessage', (from) => {

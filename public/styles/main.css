@@ -2,32 +2,72 @@
 /* line 3, main.scss */
 html, body {
   height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* line 7, main.scss */
+/* line 10, main.scss */
+#pane {
+  position: relative;
+  width: 50rem;
+  height: 50rem;
+  border: 2px solid red;
+}
+
+/* line 17, main.scss */
+.box {
+  position: absolute;
+  top: 140px;
+  left: 140px;
+  width: 40px;
+  height: 40px;
+}
+
+/* line 22, main.scss */
+.me {
+  background-color: black;
+}
+
+/* line 26, main.scss */
+.enemy {
+  background-color: red;
+}
+
+/* line 30, main.scss */
+#chatWrapper {
+  display: inline-block;
+}
+
+/* line 34, main.scss */
+#gameWrapper {
+  display: inline-block;
+}
+
+/* line 39, main.scss */
 #compTile {
   transition: all .2s ease-in-out;
 }
 
-/* line 11, main.scss */
+/* line 43, main.scss */
 #compTile:hover {
   transform: scale(1.1);
   cursor: pointer;
 }
 
-/* line 16, main.scss */
+/* line 48, main.scss */
 .activeBox {
   height: 40rem;
 }
 
-/* line 20, main.scss */
+/* line 52, main.scss */
 .chatContainer {
   height: 40rem;
   background-color: lightgrey;
   overflow-y: scroll;
 }
 
-/* line 26, main.scss */
+/* line 58, main.scss */
 .chatMessage {
   width: 50%;
   height: auto;
@@ -35,29 +75,29 @@ html, body {
   padding: 1rem;
 }
 
-/* line 33, main.scss */
+/* line 65, main.scss */
 .chatMessage p {
   font-size: 12px;
 }
 
-/* line 37, main.scss */
+/* line 69, main.scss */
 #myMsg {
   float: right;
 }
 
-/* line 41, main.scss */
+/* line 73, main.scss */
 #anotherMsg {
   float: left;
 }
 
 /* clearfix */
-/* line 46, main.scss */
+/* line 78, main.scss */
 .clearfix-7da63 {
   clear: both;
 }
 
 /* board */
-/* line 51, main.scss */
+/* line 83, main.scss */
 .board-b72b1 {
   border: 2px solid #404040;
   -webkit-box-sizing: content-box;
@@ -66,7 +106,7 @@ html, body {
 }
 
 /* square */
-/* line 59, main.scss */
+/* line 91, main.scss */
 .square-55d63 {
   float: left;
   position: relative;
@@ -80,21 +120,21 @@ html, body {
 }
 
 /* white square */
-/* line 73, main.scss */
+/* line 105, main.scss */
 .white-1e1d7 {
   background-color: #f0d9b5;
   color: #b58863;
 }
 
 /* black square */
-/* line 79, main.scss */
+/* line 111, main.scss */
 .black-3c85d {
   background-color: #b58863;
   color: #f0d9b5;
 }
 
 /* highlighted square */
-/* line 85, main.scss */
+/* line 117, main.scss */
 .highlight1-32417, .highlight2-9c5d2 {
   -webkit-box-shadow: inset 0 0 3px 3px yellow;
   -moz-box-shadow: inset 0 0 3px 3px yellow;
@@ -102,7 +142,7 @@ html, body {
 }
 
 /* notation */
-/* line 92, main.scss */
+/* line 124, main.scss */
 .notation-322f9 {
   cursor: default;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -110,57 +150,57 @@ html, body {
   position: absolute;
 }
 
-/* line 99, main.scss */
+/* line 131, main.scss */
 .alpha-d2270 {
   bottom: 1px;
   right: 3px;
 }
 
-/* line 104, main.scss */
+/* line 136, main.scss */
 .numeric-fc462 {
   top: 2px;
   left: 2px;
 }
 
-/* line 109, main.scss */
+/* line 141, main.scss */
 .piece-417db {
   cursor: pointer;
 }
 
-/* line 116, main.scss */
+/* line 148, main.scss */
 .bar {
   background-color: #c1c1c1;
 }
 
-/* line 121, main.scss */
+/* line 153, main.scss */
 .breadcrumb .active a {
   color: #000;
 }
 
-/* line 126, main.scss */
+/* line 158, main.scss */
 .competition {
   background: #fff;
   color: #000;
 }
 
 /** GAME COMPETITION STYLES **/
-/* line 133, main.scss */
+/* line 165, main.scss */
 .game .game__player-name {
   padding-left: 1rem;
 }
-/* line 137, main.scss */
+/* line 169, main.scss */
 .game .game__player-icon {
   display: inline-block;
   vertical-align: middle;
 }
 
 /** RAIN component styles below **/
-/* line 145, main.scss */
+/* line 177, main.scss */
 .rain-emoji-block {
   position: relative;
   overflow: hidden;
 }
-/* line 149, main.scss */
+/* line 181, main.scss */
 .rain-emoji-block .rain-emoji-block__background {
   width: 100%;
   height: 100%;
@@ -169,7 +209,7 @@ html, body {
   left: 0;
   z-index: 999;
 }
-/* line 157, main.scss */
+/* line 189, main.scss */
 .rain-emoji-block .rain-emoji-block__background span {
   top: -30%;
   position: absolute;

@@ -12,6 +12,7 @@ class containerController {
 
         socketService.socketOn('players',(from)=>{
                 $rootScope.players=from;
+                $rootScope.$broadcast('createPlayers');
             });
 
 

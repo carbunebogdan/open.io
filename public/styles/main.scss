@@ -2,6 +2,38 @@
 
 html,body { 
   height:100%; 
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+#pane {
+    position:relative;
+    width:50rem; 
+    height:50rem;
+    border:2px solid red;
+}
+    
+.box {
+    position:absolute; top:140px; left:140px;
+    width:40px; height:40px;          
+}
+
+.me{
+  background-color:black;
+}
+
+.enemy{
+  background-color:red;
+}
+
+#chatWrapper{
+  display:inline-block;
+}
+
+#gameWrapper{
+    display:inline-block;
+    
 }
 
 #compTile{
