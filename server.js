@@ -58,6 +58,8 @@ io.on('connection', (socket) => {
             y: 0
         }
     };
+
+    // try to connect with a certain username
     socket.on('tryConnect',(from)=>{
         var ok=true;
         for(var i=0;i<players.length;i++){
@@ -77,7 +79,7 @@ io.on('connection', (socket) => {
         }else{
                 socket.emit('confirmMessage', 0);
         }
-    })
+    });
 
 
     // in case of an unexpected disconnection remove me from players list
@@ -97,6 +99,13 @@ io.on('connection', (socket) => {
         
     });
 
+    // change food pos
+    socket.on('changeFoodPos',(from)=>{
+        console.log(from);
+        socket.broadcast.emit('changeFoodPos',from);
+    })
+
+    // moving message
     socket.on('moving', (from)=>{
         socket.broadcast.emit('moving', from);
     })

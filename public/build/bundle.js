@@ -153,7 +153,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 return newValue < 0 ? 0 : newValue > maxValue ? maxValue : newValue;
             };
 
-            var getRandomArbitrary = (min, max) => {
+            var getRandomPos = (min, max) => {
                 return Math.random() * (max - min) + min;
             };
 
@@ -163,8 +163,35 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 div.id = foodCount++;
                 document.getElementById('pane').appendChild(div);
                 var id = '#' + foodCount;
-                $(id);
+                $(id).css({
+                    left: getRandomPos(0, maxValue),
+                    top: getRandomPos(0, maxValue)
+                });
             };
+
+            var changeFoodPos = ($food, coords = null, id = null) => {
+                if (!coords) {
+                    var coords = {
+                        left: getRandomPos(0, maxValue),
+                        top: getRandomPos(0, maxValue)
+                    };
+
+                    socketService.socketEmit('changeFoodPos', {
+                        id: "#" + $food.attr('id'),
+                        coords: coords
+                    });
+                }
+                if (!$food) {
+                    $food = $(id);
+                }
+
+                $food.css({
+                    left: coords.left,
+                    top: coords.top
+                });
+            };
+
+            var increaseSize = () => {};
 
             socketService.socketOn('playerDisconnect', from => {
                 for (var i = 0; i < $rootScope.players.length; i++) {
@@ -209,6 +236,10 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                 document.getElementById(from.uname).appendChild(enemyName);
             });
 
+            socketService.socketOn('changeFoodPos', from => {
+                changeFoodPos(null, from.coords, from.id);
+            });
+
             $(window).keydown(event => {
                 keysPressed[event.which] = true;
             });
@@ -237,8 +268,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService) 
                                         console.log('same dudes');
                                     }
                                 } else if (collision(box, food)) {
-                                    console.log('neamyy');
-                                    console.log(food);
+                                    changeFoodPos(food);
                                 }
                             }
                         }
