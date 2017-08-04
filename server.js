@@ -32,7 +32,7 @@ app.set('port', (process.env.PORT || 5000));
 const server = app.listen(app.get('port'), ()=>{
     console.log('Open.io runs on port ' + app.get('port'));
 });
-server.listen('/tmp/nginx.socket');
+// server.listen('/tmp/nginx.socket');
 const io = require('socket.io')(server);
 var players=[];
 var food=[];
@@ -46,26 +46,32 @@ var generateFood=(quantity,size)=>{
         })      
     }
 }
+var generateRandomColor=()=>{
+              var letters = '0123456789ABCDEF';
+              var color = '#';
+              for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+              }
+              return color;
+            }
 generateFood(100,1980);
 
 /**
  * Socket connection
  * @param {object} socket - socket object.
  */
-var room="game";
+
 io.on('connection', (socket) => {
     var connected=false;
     var currentPlayer = {
         id: socket.id,
         size:40,
-        hue: Math.round(Math.random() * 360),
+        color: generateRandomColor(),
         invincible: true,
-        lastHeartbeat: new Date().getTime(),
-        target: {
-            x: 0,
-            y: 0
-        }
+        team:'solo'
     };
+
+
 
     // try to connect with a certain username
     socket.on('tryConnect',(from)=>{
@@ -76,10 +82,11 @@ io.on('connection', (socket) => {
             }
         }
         if(ok){
-            socket.join(room);
+
             socket.emit('confirmMessage', {
                 msg:1,
-                id:socket.id
+                id:socket.id,
+                color:currentPlayer.color
             });
             currentPlayer.uname=from;
             players.push(currentPlayer);
@@ -130,10 +137,22 @@ io.on('connection', (socket) => {
 
     // update enemy size
     socket.on('increaseEnemy',(from)=>{
+
         socket.broadcast.emit('increaseEnemy',from);
+        // for(var i=0;i<players.length;i++){
+        //     if(players[i].uname==from.target){
+        //         players[i].size=from.targetCurrSize;
+        //         break;
+        //     }
+        // }
+    })
+
+    // update my size
+    socket.on('updateSize',(from)=>{
+        console.log(from);
         for(var i=0;i<players.length;i++){
-            if(players[i].uname==from.target){
-                players[i].size+=from.size / 12;
+            if(players[i].uname==from.uname){
+                players[i].size=from.size;
                 break;
             }
         }
@@ -169,6 +188,16 @@ io.on('connection', (socket) => {
             }
     })
 
+    // send team invitation
+    socket.on('askForTeam',(from)=>{
+        console.log(from.player);
+        socket.broadcast.to(from.player).emit('askForTeam', from.other);
+    });
+
+    // confirm team
+    socket.on('confirmTeam',(from)=>{
+        socket.broadcast.to(from.player).emit('confirmTeam', from.team);
+    })
     
     // new message
     socket.on('newMessage', (from) => {

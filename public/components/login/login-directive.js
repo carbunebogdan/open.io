@@ -18,7 +18,8 @@ const loginDirective = ($rootScope,$location,localStorageService,$mdDialog,socke
                                     if(from.msg==1){
                                         $rootScope.account={
                                             uname:scope.username,
-                                            id:from.id
+                                            id:from.id,
+                                            color:from.color
                                         }
                                         $window.location.href='/#!/room';
                                     }else{

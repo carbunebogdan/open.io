@@ -12,11 +12,14 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService,$
             box.width(40);
             box.height(40);
 
-            
+            box.css({
+                backgroundColor:$rootScope.account.color
+            })
             
             $rootScope.account.size=box.width();
 
             maxValue = pane.width() - box.width();
+
 
             var k = 0;
             var boxName = document.createElement('p');
@@ -128,6 +131,10 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService,$
                         box.height(box.height() + calcSize);
                         maxValue = pane.width() - box.width();
                         $rootScope.account.size+=calcSize;
+                        socketService.socketEmit('updateSize',{
+                            uname:$rootScope.account.uname,
+                            size:$rootScope.account.size
+                        })
                         for(i=0;i<$rootScope.players.length;i++){
                             if($rootScope.account.uname==$rootScope.players[i].uname){
                                 $rootScope.players[i].size+=calcSize;
@@ -175,6 +182,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService,$
                 for(i=0;i<$rootScope.players.length;i++){
                     if($rootScope.players[i].uname==from.target){
                         $rootScope.players[i].size+=from.size/12;
+
                         if (!scope.$$phase)
                             scope.$apply();
                     }
@@ -209,7 +217,8 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService,$
                         enemyName.innerText = $rootScope.players[i].uname;
                         enemyName.id = 'name';
                         document.getElementById($rootScope.players[i].uname).appendChild(enemyName);
-                        document.getElementById($rootScope.players[i].uname).width = 600;
+                        console.log($rootScope.players[i].color);
+                        document.getElementById($rootScope.players[i].uname).style.backgroundColor=$rootScope.players[i].color;
                         increaseSize($rootScope.players[i].size, $rootScope.players[i].uname, true);
                     }
                 }
@@ -230,6 +239,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService,$
                 enemyName.innerText = from.uname;
                 enemyName.id = 'name';
                 document.getElementById(from.uname).appendChild(enemyName);
+                document.getElementById(from.uname).style.backgroundColor=from.color;
                 increaseSize(from.size, from.uname, true);
                 sortByScore();
             });

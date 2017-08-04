@@ -7,58 +7,58 @@ html, body {
   padding: 0;
 }
 
-/* line 10, main.scss */
+/* line 11, main.scss */
 #top {
   position: relative;
   float: right;
   width: 15rem;
-  background-color: lightgrey;
+  padding: 1rem;
   z-index: 9999;
 }
 
-/* line 18, main.scss */
+/* line 19, main.scss */
 #ui {
   position: absolute;
   width: 100%;
 }
 
-/* line 23, main.scss */
+/* line 24, main.scss */
 #status {
   color: darkred;
   font-weight: bolder;
 }
 
-/* line 28, main.scss */
+/* line 29, main.scss */
 #accSize {
   font-weight: bolder;
   color: darkgrey;
 }
 
-/* line 33, main.scss */
+/* line 34, main.scss */
 #name {
   color: gray;
   font-weight: bold;
   text-align: center;
 }
 
-/* line 39, main.scss */
+/* line 40, main.scss */
 #pane {
   position: relative;
   width: 2000px;
   height: 2000px;
 }
 
-/* line 46, main.scss */
+/* line 47, main.scss */
 .food {
   position: absolute;
   top: 40px;
   left: 240px;
   width: 20px;
   height: 20px;
-  background-color: green;
+  background-color: #a8ef94;
 }
 
-/* line 55, main.scss */
+/* line 57, main.scss */
 .box {
   position: absolute;
   top: 140px;
@@ -69,22 +69,22 @@ html, body {
   transition: width 1s ease-in-out,height 1s ease-in-out;
 }
 
-/* line 65, main.scss */
+/* line 67, main.scss */
 .me {
   background-color: black;
 }
 
-/* line 69, main.scss */
+/* line 71, main.scss */
 .enemy {
   background-color: red;
 }
 
-/* line 73, main.scss */
+/* line 75, main.scss */
 #chatWrapper {
   position: absolute;
 }
 
-/* line 77, main.scss */
+/* line 79, main.scss */
 #gameWrapper {
   position: absolute;
   top: 0;
@@ -114,7 +114,7 @@ html, body {
 /* line 100, main.scss */
 .chatContainer {
   height: 40rem;
-  background-color: lightgrey;
+  background-color: #ededed;
   overflow-y: scroll;
 }
 

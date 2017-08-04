@@ -13,7 +13,6 @@ angular.module('berger')
             .state('room', {
                 url: '/room',
                 controller: 'containerController',
-                controllerAs: 'contCtrl',
                 template: '<container-directive></container-directive>'
             });
 

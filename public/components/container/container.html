@@ -2,12 +2,18 @@
 	<h1 id="status" style="text-align: center">{{status}}</h1>
 	<h1 id="accSize" style="text-align: left;">Score: {{account.size| number : 1}}</h1>
 	<div id="top">
-		<div ng-repeat="player in players">
+		<div ng-repeat="player in players | limitTo:5">
 			<p style="display: inline-block;">{{$index+1}}. {{player.uname}}: {{player.size| number : 1}}</p>
-			<md-button class="md-icon-button md-primary" style="display: inline-block;" ng-if="player.uname!=account.uname" ng-click="askForTeam(player.id)">
+			<md-button class="md-icon-button md-primary" style="display: inline-block;" ng-if="player.uname!=account.uname && teamMode && handshake!=player.uname" ng-click="askForTeam(player.id)">
 	        	<md-icon md-svg-icon="../images/icons/notification.svg"></md-icon>
 	      	</md-button>
+	      	<md-button class="md-icon-button md-primary" style="display: inline-block;" ng-if="player.uname!=account.uname && teamMode && handshake==player.uname" ng-click="confirmTeam(player.id,player.uname)">
+	        	<md-icon md-svg-icon="../images/icons/handshake.svg"></md-icon>
+	      	</md-button>
 		</div>
+		<md-checkbox ng-model="teamMode" aria-label="Team mode">
+		Team Mode
+          </md-checkbox>
 	</div>
 	
 </div>

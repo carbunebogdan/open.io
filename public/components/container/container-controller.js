@@ -3,12 +3,14 @@ class containerController {
         $rootScope.players=[];
         if(!$rootScope.account){
             $location.path('/login');
+
+            
         }
         
 
         // Register socket
-        socketService.registerSocket();
-
+            socketService.registerSocket();
+        
 
         socketService.socketOn('game',(from)=>{
                 $rootScope.players=from.players;
@@ -16,7 +18,7 @@ class containerController {
                 $timeout(() => { $rootScope.$broadcast('createGame'); }, 500);
 
             });
-        
+
 
 
 
