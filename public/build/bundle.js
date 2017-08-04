@@ -499,13 +499,18 @@ const loginDirective = ($rootScope, $location, localStorageService, $mdDialog, s
         templateUrl: 'components/login/login.html',
         restrict: 'E',
         link: scope => {
+            scope.myColor = null;
 
-            scope.proceed = username => {
+            scope.proceed = (username, color) => {
                 if (/^[a-zA-Z0-9- ]*$/.test(username) == false) {
                     scope.showIllegal();
                     return false;
                 }
-                socketService.socketEmit('tryConnect', username);
+                console.log(color);
+                socketService.socketEmit('tryConnect', {
+                    uname: username,
+                    color: color
+                });
                 scope.username = username;
             };
 

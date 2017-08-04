@@ -78,18 +78,22 @@ io.on('connection', (socket) => {
     socket.on('tryConnect',(from)=>{
         var ok=true;
         for(var i=0;i<players.length;i++){
-            if(players[i].uname==from){
+            if(players[i].uname==from.uname){
                 ok=false;
             }
         }
         if(ok){
 
+            
+            if(from.color){
+                currentPlayer.color=from.color;
+            }
             socket.emit('confirmMessage', {
                 msg:1,
                 id:socket.id,
                 color:currentPlayer.color
             });
-            currentPlayer.uname=from;
+            currentPlayer.uname=from.uname;
             players.push(currentPlayer);
             socket.emit('game',{
                 players:players,

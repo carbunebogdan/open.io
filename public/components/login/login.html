@@ -12,7 +12,7 @@
 
         <div>
           <h4 style="text-align: center">enter an username</h4><hr>
-          	<form name="loginFrm" ng-submit="proceed(username)">
+          	<form name="loginFrm" ng-submit="proceed(username,myColor)">
 		      <md-input-container style="display: block;margin:auto;width: 20rem">
 		        <label style="text-align: center">Username</label>
 		        <input ng-model="username" name="uname" required autocomplete="off">
@@ -22,6 +22,8 @@
                         </div>
                     </div>
 		      </md-input-container>
+          <h4>Personalize your color</h4>
+          <div md-color-picker ng-model="myColor"></div>
 		      
 		      <div>
 		      <md-button type="submit" class="md-primary md-raised" ng-disabled="!username" style="display: block;margin: auto">Go on!</md-button>
