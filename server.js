@@ -42,7 +42,8 @@ var generateFood=(quantity,size)=>{
         food.push({
             id:i,
             left:Math.random() * (size - 0) + 0,
-            top:Math.random() * (size - 0) + 0
+            top:Math.random() * (size - 0) + 0,
+            color:generateRandomColor()
         })      
     }
 }

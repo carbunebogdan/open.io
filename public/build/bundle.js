@@ -225,7 +225,8 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                 var id = '#' + food.id;
                 $(id).css({
                     left: food.left,
-                    top: food.top
+                    top: food.top,
+                    backgroundColor: food.color
                 });
             };
 
