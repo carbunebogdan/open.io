@@ -127,6 +127,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService,$
                         var targetEl = $(id);
                         targetEl.width(targetEl.width() + calcSize);
                         targetEl.height(targetEl.height() + calcSize);
+                        
                     } else {
                         box.width(box.width() + calcSize);
                         box.height(box.height() + calcSize);

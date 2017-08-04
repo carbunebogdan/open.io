@@ -11,11 +11,11 @@
         <md-content class="md-padding">
 
         <div>
-          <h4 style="text-align: center">enter an username</h4><hr>
+          <h4 style="text-align: center">enter a great 8 chars username! </h4><hr>
           	<form name="loginFrm" ng-submit="proceed(username,myColor)">
 		      <md-input-container style="display: block;margin:auto;width: 20rem">
 		        <label style="text-align: center">Username</label>
-		        <input ng-model="username" name="uname" required autocomplete="off">
+		        <input ng-model="username" name="uname" required autocomplete="off" maxlength="8">
 		        <div ng-messages="loginFrm.uname.$error" multiple md-auto-hide="false">
                         <div ng-message="required">
                             You must enter an username.
