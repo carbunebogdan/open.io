@@ -14,7 +14,9 @@ class containerController {
                 $rootScope.players=from.players;
                 $rootScope.food=from.food;
                 $timeout(() => { $rootScope.$broadcast('createGame'); }, 500);
+
             });
+
 
 
     }

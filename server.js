@@ -46,7 +46,7 @@ var generateFood=(quantity,size)=>{
         })      
     }
 }
-generateFood(3,800);
+generateFood(100,1980);
 
 /**
  * Socket connection
@@ -57,9 +57,9 @@ io.on('connection', (socket) => {
     var connected=false;
     var currentPlayer = {
         id: socket.id,
-        size:null,
+        size:40,
         hue: Math.round(Math.random() * 360),
-        type: null,
+        invincible: true,
         lastHeartbeat: new Date().getTime(),
         target: {
             x: 0,
@@ -105,7 +105,6 @@ io.on('connection', (socket) => {
                     }
                 }
             }
-            console.log(room);
             socket.broadcast.emit('playerDisconnect', { uname: currentPlayer.uname });
         }
         
@@ -114,16 +113,53 @@ io.on('connection', (socket) => {
     // change food pos
     socket.on('changeFoodPos',(from)=>{
         socket.broadcast.emit('changeFoodPos',from);
+        for(var i=0;i<food.length;i++){
+            if(food[i].id==from.id){
+                food[i].left=from.coords.left;
+                food[i].top=from.coords.top;
+
+            }
+        }
     })
 
     // update enemy size
     socket.on('increaseEnemy',(from)=>{
         socket.broadcast.emit('increaseEnemy',from);
+        for(var i=0;i<players.length;i++){
+            if(players[i].uname==from.target){
+                players[i].size=players[i].size+from.size / 8;
+            }
+        }
     })
 
     // moving message
     socket.on('moving', (from)=>{
         socket.broadcast.emit('moving', from);
+    })
+
+    // kick player when he'd been eaten
+    socket.on('kickMe',(uname)=>{
+        for(var i=0;i<players.length;i++){
+                if(players[i].uname==uname){
+                    var index=players.indexOf(players[i]);
+                    if(index>-1){
+                        players.splice(index,1);
+                    }
+                }
+            }
+            socket.broadcast.emit('playerDisconnect', { uname: uname });
+    });
+
+    // I'm not invincible anymore
+    socket.on('notInvincible',(from)=>{
+        for(var i=0;i<players.length;i++){
+                if(players[i].uname==from){
+                    players[i].invincible=false;
+                    console.log('changed');
+                    socket.broadcast.emit('notInvincible',from);
+                    break;
+                }
+            }
     })
 
     
