@@ -1,10 +1,19 @@
 <div id="ui">
-	<h1 style="text-align: center">{{status}}</h1>
-	<h5 style="text-align: left;">Size: {{account.size}}</h5>
+	<h1 id="status" style="text-align: center">{{status}}</h1>
+	<h1 id="accSize" style="text-align: left;">Score: {{account.size| number : 1}}</h1>
+	<div id="top">
+		<div ng-repeat="player in players">
+			<p style="display: inline-block;">{{$index+1}}. {{player.uname}}: {{player.size| number : 1}}</p>
+			<md-button class="md-icon-button md-primary" style="display: inline-block;" ng-if="player.uname!=account.uname" ng-click="askForTeam(player.id)">
+	        	<md-icon md-svg-icon="../images/icons/notification.svg"></md-icon>
+	      	</md-button>
+		</div>
+	</div>
+	
 </div>
 <div id="gameWrapper">
 	<game-directive></game-directive>
 </div>
-<div id="chatWrapper" ng-hide="true">
-	<chat-directive></chat-directive>
-</div>
+
+<chat-directive></chat-directive>
+

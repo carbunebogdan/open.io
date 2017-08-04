@@ -77,7 +77,10 @@ io.on('connection', (socket) => {
         }
         if(ok){
             socket.join(room);
-            socket.emit('confirmMessage', 1);
+            socket.emit('confirmMessage', {
+                msg:1,
+                id:socket.id
+            });
             currentPlayer.uname=from;
             players.push(currentPlayer);
             socket.emit('game',{
@@ -88,7 +91,9 @@ io.on('connection', (socket) => {
             connected=true;
             
         }else{
-                socket.emit('confirmMessage', 0);
+                socket.emit('confirmMessage', {
+                    msg:0
+                });
         }
     });
 
@@ -103,6 +108,7 @@ io.on('connection', (socket) => {
                     if(index>-1){
                         players.splice(index,1);
                     }
+                    break;
                 }
             }
             socket.broadcast.emit('playerDisconnect', { uname: currentPlayer.uname });
@@ -127,7 +133,8 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('increaseEnemy',from);
         for(var i=0;i<players.length;i++){
             if(players[i].uname==from.target){
-                players[i].size=players[i].size+from.size / 8;
+                players[i].size+=from.size / 12;
+                break;
             }
         }
     })
@@ -145,6 +152,7 @@ io.on('connection', (socket) => {
                     if(index>-1){
                         players.splice(index,1);
                     }
+                    break;
                 }
             }
             socket.broadcast.emit('playerDisconnect', { uname: uname });
@@ -155,7 +163,6 @@ io.on('connection', (socket) => {
         for(var i=0;i<players.length;i++){
                 if(players[i].uname==from){
                     players[i].invincible=false;
-                    console.log('changed');
                     socket.broadcast.emit('notInvincible',from);
                     break;
                 }

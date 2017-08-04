@@ -1,5 +1,4 @@
 <div class="container">
-	<myacc-navbar></myacc-navbar>
 	<div layout="row" layout-align="center center">
 		<div style="width: 50%" layout="column">
 			<div class="chatContainer" id="chat">
@@ -19,7 +18,7 @@
 				<form name="msgForm" ng-submit="send()">
 					<md-input-container>
 						<label>Message</label>
-						<input type="text" name="message" ng-model="message.message" ng-focus="changeTitle()">
+						<input type="text" name="message" ng-model="message.message" id="msgField" autocomplete="off">
 					</md-input-container>
 				</form>
 			</div>

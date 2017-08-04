@@ -40,6 +40,10 @@ const chatDirective = ($rootScope, socketService, $window, localStorageService) 
                 }
             });
 
+            $rootScope.$on('focusMessage', () => {
+                document.getElementById("msgField").focus();
+            });
+
             scope.send = () => {
                 if (scope.message.message != '') {
                     scope.messages.push(scope.message);
@@ -51,6 +55,7 @@ const chatDirective = ($rootScope, socketService, $window, localStorageService) 
                         message: ''
                     };
                 }
+                document.getElementById("msgField").blur();
             };
 
             // Watch for socket incoming data
@@ -100,7 +105,15 @@ const containerDirective = ($window, $rootScope, localStorageService, socketServ
     return {
         templateUrl: 'components/container/container.html',
         restrict: 'E',
-        link: scope => {}
+        link: scope => {
+            scope.askForTeam = id => {
+
+                socketService.socketEmit('askForTeam', {
+                    other: $rootScope.account.id,
+                    player: id
+                });
+            };
+        }
     };
 };
 
@@ -122,7 +135,10 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
             box.width(40);
             box.height(40);
 
+            $rootScope.account.size = box.width();
+
             maxValue = pane.width() - box.width();
+
             var k = 0;
             var boxName = document.createElement('p');
             boxName.innerText = $rootScope.account.uname;
@@ -132,7 +148,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                 console.log("i've lost :(");
             };
 
-            scope.status = 'invincible for 5 seconds!';
+            scope.status = 'Invincible for 3 seconds!';
 
             var collision = ($div1, $div2) => {
                 if ($div2.offset()) {
@@ -153,6 +169,18 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                 } else {
                     return false;
                 }
+            };
+
+            var sortByScore = () => {
+                var aux = null;
+                for (i = 0; i < $rootScope.players.length - 1; i++) for (j = i; j < $rootScope.players.length; j++) {
+                    if ($rootScope.players[i].size < $rootScope.players[j].size) {
+                        aux = scope.players[i];
+                        $rootScope.players[i] = $rootScope.players[j];
+                        $rootScope.players[j] = aux;
+                    }
+                }
+                if (!scope.$$phase) scope.$apply();
             };
 
             var calculateNewValue = (oldValue, keyCode1, keyCode2) => {
@@ -199,27 +227,30 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
             };
 
             var increaseSize = (size, target = null, initMode = false) => {
+
                 if (!initMode) {
+                    var calcSize = size / 12;
                     if (target) {
                         var id = "#" + target;
                         var targetEl = $(id);
-                        targetEl.width(targetEl.width() + size / 8);
-                        targetEl.height(targetEl.height() + size / 8);
+                        targetEl.width(targetEl.width() + calcSize);
+                        targetEl.height(targetEl.height() + calcSize);
                     } else {
-                        box.width(box.width() + size / 8);
-                        box.height(box.height() + size / 8);
+                        box.width(box.width() + calcSize);
+                        box.height(box.height() + calcSize);
                         maxValue = pane.width() - box.width();
+                        $rootScope.account.size += calcSize;
                         for (i = 0; i < $rootScope.players.length; i++) {
-                            if ($rootScope.players[i].uname == $rootScope.account.uname) {
-                                console.log($rootScope.account);
-                                $rootScope.account.size += size;
+                            if ($rootScope.account.uname == $rootScope.players[i].uname) {
+                                $rootScope.players[i].size += calcSize;
                             }
                         }
+                        if (!scope.$$phase) scope.$apply();
+                        sortByScore();
                     }
                 } else {
                     var id = "#" + target;
                     var targetEl = $(id);
-                    console.log(size);
                     targetEl.css('width', size);
                     targetEl.css('height', size);
                 }
@@ -230,8 +261,13 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                 socketService.socketEmit('notInvincible', $rootScope.account.uname);
                 $timeout(() => {
                     scope.status = '';
-                }, 5000);
-            }, 5000);
+                }, 3000);
+            }, 3000);
+
+            box.css({
+                left: getRandomPos(0, maxValue),
+                top: getRandomPos(0, maxValue)
+            });
 
             socketService.socketOn('notInvincible', from => {
                 for (var i = 0; i < $rootScope.players.length; i++) {
@@ -246,9 +282,11 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                 increaseSize(from.size, from.target);
                 for (i = 0; i < $rootScope.players.length; i++) {
                     if ($rootScope.players[i].uname == from.target) {
-                        $rootScope.players[i].size += from.size;
+                        $rootScope.players[i].size += from.size / 12;
+                        if (!scope.$$phase) scope.$apply();
                     }
                 }
+                sortByScore();
             });
 
             socketService.socketOn('playerDisconnect', from => {
@@ -263,7 +301,6 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                         document.getElementById('pane').removeChild(leftEnemy);
                     }
                 }
-                console.log($rootScope.players);
                 scope.$apply();
             });
 
@@ -285,6 +322,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                 for (var i = 0; i < $rootScope.food.length; i++) {
                     spawnFood($rootScope.food[i]);
                 }
+                sortByScore();
             });
 
             socketService.socketOn('playerJoin', from => {
@@ -299,6 +337,7 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
                 enemyName.id = 'name';
                 document.getElementById(from.uname).appendChild(enemyName);
                 increaseSize(from.size, from.uname, true);
+                sortByScore();
             });
 
             socketService.socketOn('changeFoodPos', from => {
@@ -314,16 +353,15 @@ const gameDirective = ($window, $rootScope, localStorageService, socketService, 
 
             // stop key scroll
             $window.addEventListener("keydown", e => {
-                if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                if ([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
                     e.preventDefault();
+                } else {
+                    $rootScope.$broadcast('focusMessage');
                 }
             }, false);
 
-            console.log($('#me').offset());
             setInterval(() => {
-                // console.log($("#me").offset().top);
-
-                if (k < 200) {
+                if (k < 50) {
                     k++;
                 } else {
 
@@ -430,14 +468,19 @@ const loginDirective = ($rootScope, $location, localStorageService, $mdDialog, s
         link: scope => {
 
             scope.proceed = username => {
+                if (/^[a-zA-Z0-9- ]*$/.test(username) == false) {
+                    scope.showIllegal();
+                    return false;
+                }
                 socketService.socketEmit('tryConnect', username);
                 scope.username = username;
             };
 
             socketService.socketOn('confirmMessage', from => {
-                if (from == 1) {
+                if (from.msg == 1) {
                     $rootScope.account = {
-                        uname: scope.username
+                        uname: scope.username,
+                        id: from.id
                     };
                     $window.location.href = '/#!/room';
                 } else {
@@ -447,6 +490,10 @@ const loginDirective = ($rootScope, $location, localStorageService, $mdDialog, s
 
             scope.showWarn = function (ev) {
                 $mdDialog.show($mdDialog.alert().clickOutsideToClose(true).title('Username already exists!').textContent('Please choose another one.').ok('ok').targetEvent(ev));
+            };
+
+            scope.showIllegal = function (ev) {
+                $mdDialog.show($mdDialog.alert().clickOutsideToClose(true).title('Username contains illegal characters!').textContent('Please choose another one.').ok('ok').targetEvent(ev));
             };
         }
     };

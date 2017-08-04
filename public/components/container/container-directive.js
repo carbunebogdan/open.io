@@ -3,7 +3,13 @@ const containerDirective = ($window,$rootScope,localStorageService,socketService
         templateUrl: 'components/container/container.html',
         restrict: 'E',
         link: (scope) => {
-            
+            scope.askForTeam=(id)=>{
+            	
+            	socketService.socketEmit('askForTeam',{
+            		other:$rootScope.account.id,
+            		player:id
+            	})
+            }
         }
     };
 };

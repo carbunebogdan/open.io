@@ -28,6 +28,7 @@ const chatDirective = ($rootScope, socketService, $window,localStorageService) =
                 }
             });
 
+
             socketService.socketOn('playerDisconnect',(from)=>{
                 if(from.uname!=$rootScope.account.uname){
                     scope.messages.push({
@@ -39,6 +40,10 @@ const chatDirective = ($rootScope, socketService, $window,localStorageService) =
                 }
             });
 
+            $rootScope.$on('focusMessage',()=>{
+                document.getElementById("msgField").focus();
+            })
+
             scope.send = () => {
                 if (scope.message.message != '') {
                     scope.messages.push(scope.message);
@@ -49,7 +54,9 @@ const chatDirective = ($rootScope, socketService, $window,localStorageService) =
                         sender: $rootScope.account.uname,
                         message: ''
                     };
+
                 }
+                document.getElementById("msgField").blur();
             }
 
             // Watch for socket incoming data

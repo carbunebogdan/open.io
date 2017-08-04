@@ -15,7 +15,7 @@
           	<form name="loginFrm" ng-submit="proceed(username)">
 		      <md-input-container style="display: block;margin:auto;width: 20rem">
 		        <label style="text-align: center">Username</label>
-		        <input ng-model="username" name="uname" required>
+		        <input ng-model="username" name="uname" required autocomplete="off">
 		        <div ng-messages="loginFrm.uname.$error" multiple md-auto-hide="false">
                         <div ng-message="required">
                             You must enter an username.

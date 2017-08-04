@@ -7,21 +7,48 @@ html, body {
   padding: 0;
 }
 
-/* line 12, main.scss */
+/* line 10, main.scss */
+#top {
+  position: relative;
+  float: right;
+  width: 15rem;
+  background-color: lightgrey;
+  z-index: 9999;
+}
+
+/* line 18, main.scss */
+#ui {
+  position: absolute;
+  width: 100%;
+}
+
+/* line 23, main.scss */
+#status {
+  color: darkred;
+  font-weight: bolder;
+}
+
+/* line 28, main.scss */
+#accSize {
+  font-weight: bolder;
+  color: darkgrey;
+}
+
+/* line 33, main.scss */
 #name {
   color: gray;
   font-weight: bold;
   text-align: center;
 }
 
-/* line 18, main.scss */
+/* line 39, main.scss */
 #pane {
   position: relative;
   width: 2000px;
   height: 2000px;
 }
 
-/* line 25, main.scss */
+/* line 46, main.scss */
 .food {
   position: absolute;
   top: 40px;
@@ -31,7 +58,7 @@ html, body {
   background-color: green;
 }
 
-/* line 34, main.scss */
+/* line 55, main.scss */
 .box {
   position: absolute;
   top: 140px;
@@ -42,22 +69,22 @@ html, body {
   transition: width 1s ease-in-out,height 1s ease-in-out;
 }
 
-/* line 44, main.scss */
+/* line 65, main.scss */
 .me {
   background-color: black;
 }
 
-/* line 48, main.scss */
+/* line 69, main.scss */
 .enemy {
   background-color: red;
 }
 
-/* line 52, main.scss */
+/* line 73, main.scss */
 #chatWrapper {
-  display: inline-block;
+  position: absolute;
 }
 
-/* line 56, main.scss */
+/* line 77, main.scss */
 #gameWrapper {
   position: absolute;
   top: 0;
@@ -68,36 +95,35 @@ html, body {
   overflow-x: scroll;
 }
 
-/* line 66, main.scss */
+/* line 87, main.scss */
 #gameWrapper::-webkit-scrollbar {
-  /* This is the magic bit */
   display: none;
 }
 
-/* line 70, main.scss */
+/* line 90, main.scss */
 #compTile {
   transition: all .2s ease-in-out;
 }
 
-/* line 74, main.scss */
+/* line 94, main.scss */
 #compTile:hover {
   transform: scale(1.1);
   cursor: pointer;
 }
 
-/* line 79, main.scss */
-.activeBox {
-  height: 40rem;
-}
-
-/* line 83, main.scss */
+/* line 100, main.scss */
 .chatContainer {
   height: 40rem;
   background-color: lightgrey;
   overflow-y: scroll;
 }
 
-/* line 89, main.scss */
+/* line 106, main.scss */
+.chatContainer::-webkit-scrollbar {
+  display: none;
+}
+
+/* line 110, main.scss */
 .chatMessage {
   width: 50%;
   height: auto;
@@ -105,29 +131,29 @@ html, body {
   padding: 1rem;
 }
 
-/* line 96, main.scss */
+/* line 117, main.scss */
 .chatMessage p {
   font-size: 12px;
 }
 
-/* line 100, main.scss */
+/* line 121, main.scss */
 #myMsg {
   float: right;
 }
 
-/* line 104, main.scss */
+/* line 125, main.scss */
 #anotherMsg {
   float: left;
 }
 
 /* clearfix */
-/* line 109, main.scss */
+/* line 130, main.scss */
 .clearfix-7da63 {
   clear: both;
 }
 
 /* board */
-/* line 114, main.scss */
+/* line 135, main.scss */
 .board-b72b1 {
   border: 2px solid #404040;
   -webkit-box-sizing: content-box;
@@ -136,7 +162,7 @@ html, body {
 }
 
 /* square */
-/* line 122, main.scss */
+/* line 143, main.scss */
 .square-55d63 {
   float: left;
   position: relative;
@@ -150,21 +176,21 @@ html, body {
 }
 
 /* white square */
-/* line 136, main.scss */
+/* line 157, main.scss */
 .white-1e1d7 {
   background-color: #f0d9b5;
   color: #b58863;
 }
 
 /* black square */
-/* line 142, main.scss */
+/* line 163, main.scss */
 .black-3c85d {
   background-color: #b58863;
   color: #f0d9b5;
 }
 
 /* highlighted square */
-/* line 148, main.scss */
+/* line 169, main.scss */
 .highlight1-32417, .highlight2-9c5d2 {
   -webkit-box-shadow: inset 0 0 3px 3px yellow;
   -moz-box-shadow: inset 0 0 3px 3px yellow;
@@ -172,7 +198,7 @@ html, body {
 }
 
 /* notation */
-/* line 155, main.scss */
+/* line 176, main.scss */
 .notation-322f9 {
   cursor: default;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -180,72 +206,16 @@ html, body {
   position: absolute;
 }
 
-/* line 162, main.scss */
+/* line 183, main.scss */
 .alpha-d2270 {
   bottom: 1px;
   right: 3px;
 }
 
-/* line 167, main.scss */
+/* line 188, main.scss */
 .numeric-fc462 {
   top: 2px;
   left: 2px;
-}
-
-/* line 172, main.scss */
-.piece-417db {
-  cursor: pointer;
-}
-
-/* line 179, main.scss */
-.bar {
-  background-color: #c1c1c1;
-}
-
-/* line 184, main.scss */
-.breadcrumb .active a {
-  color: #000;
-}
-
-/* line 189, main.scss */
-.competition {
-  background: #fff;
-  color: #000;
-}
-
-/** GAME COMPETITION STYLES **/
-/* line 196, main.scss */
-.game .game__player-name {
-  padding-left: 1rem;
-}
-/* line 200, main.scss */
-.game .game__player-icon {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/** RAIN component styles below **/
-/* line 208, main.scss */
-.rain-emoji-block {
-  position: relative;
-  overflow: hidden;
-}
-/* line 212, main.scss */
-.rain-emoji-block .rain-emoji-block__background {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 999;
-}
-/* line 220, main.scss */
-.rain-emoji-block .rain-emoji-block__background span {
-  top: -30%;
-  position: absolute;
-  webkit-animation: slide linear infinite;
-  -moz-animation: slide linear infinite;
-  animation: slide linear infinite;
 }
 
 @-moz-keyframes slide {

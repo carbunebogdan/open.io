@@ -6,14 +6,19 @@ const loginDirective = ($rootScope,$location,localStorageService,$mdDialog,socke
 
 
             scope.proceed=(username)=>{
+                if(/^[a-zA-Z0-9- ]*$/.test(username) == false) {
+                    scope.showIllegal();
+                    return false;
+                }
                     socketService.socketEmit('tryConnect',username);
                     scope.username=username;
             }
 
             socketService.socketOn('confirmMessage',(from)=>{
-                                    if(from==1){
+                                    if(from.msg==1){
                                         $rootScope.account={
-                                            uname:scope.username
+                                            uname:scope.username,
+                                            id:from.id
                                         }
                                         $window.location.href='/#!/room';
                                     }else{
@@ -21,11 +26,22 @@ const loginDirective = ($rootScope,$location,localStorageService,$mdDialog,socke
                                     }
                                 })
 
-            scope.showWarn = function(ev) {
+        scope.showWarn = function(ev) {
                 $mdDialog.show(
                   $mdDialog.alert()
                     .clickOutsideToClose(true)
                     .title('Username already exists!')
+                    .textContent('Please choose another one.')
+                    .ok('ok')
+                    .targetEvent(ev)
+            );
+          };
+
+        scope.showIllegal = function(ev) {
+                $mdDialog.show(
+                  $mdDialog.alert()
+                    .clickOutsideToClose(true)
+                    .title('Username contains illegal characters!')
                     .textContent('Please choose another one.')
                     .ok('ok')
                     .targetEvent(ev)

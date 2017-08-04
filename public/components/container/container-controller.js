@@ -16,6 +16,7 @@ class containerController {
                 $timeout(() => { $rootScope.$broadcast('createGame'); }, 500);
 
             });
+        
 
 
 
