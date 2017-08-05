@@ -6,12 +6,12 @@ require('dotenv').config();
 // const db = mongoose.connect(process.env.DB); 
 
 // localdev
-const db = mongoose.connect(process.env.localDB);
+// const db = mongoose.connect(process.env.localDB);
 
 // Attach lister to connected event
-mongoose.connection.once('connected', () => {
-	console.log('Connected to database');
-});
+// mongoose.connection.once('connected', () => {
+// 	console.log('Connected to database');
+// });
 
 // Expose the db connection
-module.exports = db;
+// module.exports = db;

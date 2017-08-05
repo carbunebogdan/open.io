@@ -8,10 +8,6 @@ const serveStatic = require('serve-static');
 const db = require('./app/connection');
 const app = express();
 const port = 3000;
-const accModel = require('./app/models/accModel');
-const compModel = require('./app/models/compModel');
-const gameModel = require('./app/models/gameModel');
-const generate = require('./app/game_logic/generateGames');
 
 // set views path, template engine and default layout
 app.use('/lib', serveStatic(path.normalize(__dirname) + '/bower_components'));
@@ -154,7 +150,6 @@ io.on('connection', (socket) => {
 
     // update my size
     socket.on('updateSize',(from)=>{
-        console.log(from);
         for(var i=0;i<players.length;i++){
             if(players[i].uname==from.uname){
                 players[i].size=from.size;
